@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'task_create' %}" class="btn btn-primary mb-3">
+    + Create Task
+</a>
+
+<ul class="list-group">
+    {% for task in tasks %}
+        <li class="list-group-item">
+            <a href="{% url 'task_detail' task.id %}">
+                {{ task.title }}
+            </a>
+            <span class="badge bg-secondary">{{ task.status }}</span>
+            <span class="badge bg-warning text-dark">{{ task.priority }}</span>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No tasks yet</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
