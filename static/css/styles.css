@@ -1,0 +1,19 @@
+body {
+    background-color: #0f0f0f;
+    color: white;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.list-group-item {
+    background-color: #1c1c1c;
+    color: white;
+    border: 1px solid #333;
+}
+
+.btn-primary {
+    background-color: #bfa046;
+    border: none;
+}

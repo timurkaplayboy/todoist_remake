@@ -2,22 +2,44 @@
 
 {% block content %}
 
-<a href="{% url 'task_create' %}" class="btn btn-primary mb-3">
-    + Create Task
-</a>
+<div class="d-flex justify-content-between mb-3">
+    <h2>My Tasks</h2>
+    <a href="{% url 'task_create' %}" class="btn btn-primary">+ New Task</a>
+</div>
 
-<ul class="list-group">
+<form method="get" class="row mb-4">
+    <div class="col">
+        {{ filter_form.status }}
+    </div>
+    <div class="col">
+        {{ filter_form.priority }}
+    </div>
+    <div class="col">
+        <button class="btn btn-dark">Filter</button>
+    </div>
+</form>
+
+<div class="list-group">
+
     {% for task in tasks %}
-        <li class="list-group-item">
-            <a href="{% url 'task_detail' task.id %}">
-                {{ task.title }}
-            </a>
-            <span class="badge bg-secondary">{{ task.status }}</span>
-            <span class="badge bg-warning text-dark">{{ task.priority }}</span>
-        </li>
+        <a href="{% url 'task_detail' task.id %}" class="list-group-item list-group-item-action">
+
+            <div class="d-flex justify-content-between">
+                <strong>{{ task.title }}</strong>
+
+                <div>
+                    <span class="badge bg-secondary">{{ task.status }}</span>
+                    <span class="badge bg-warning text-dark">{{ task.priority }}</span>
+                </div>
+            </div>
+
+        </a>
     {% empty %}
-        <li class="list-group-item">No tasks yet</li>
+        <div class="text-center text-muted mt-5">
+            No tasks yet 👀
+        </div>
     {% endfor %}
-</ul>
+
+</div>
 
 {% endblock %}
