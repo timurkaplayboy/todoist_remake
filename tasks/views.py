@@ -1,10 +1,11 @@
-from django.views.generic import ListView, DetailView, CreateView
-from django.urls import reverse_lazy
-from .models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
+from .forms import TaskFilterForm, TaskForm
 from .mixins import UserIsOwnerMixin
-from .forms import TaskFilterForm
+from .models import Task
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -31,23 +32,26 @@ class TaskListView(LoginRequiredMixin, ListView):
         return context
 
 
-class TaskDetailView(DetailView):
+class TaskDetailView(LoginRequiredMixin, UserIsOwnerMixin, DetailView):
     model = Task
     template_name = 'tasks/task_detail.html'
+    context_object_name = 'task'
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ['title', 'description', 'status', 'priority']
+    form_class = TaskForm
     template_name = 'tasks/task_form.html'
     success_url = reverse_lazy('task_list')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
 class TaskUpdateView(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
     model = Task
-    fields = ['title', 'description', 'status', 'priority']
+    form_class = TaskForm
     template_name = 'tasks/task_form.html'
     success_url = reverse_lazy('task_list')
 

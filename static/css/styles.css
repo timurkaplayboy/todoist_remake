@@ -1,19 +1,73 @@
 body {
-    background-color: #0f0f0f;
-    color: white;
+    background: #111827;
+    color: #f8fafc;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 920px;
 }
 
 .list-group-item {
-    background-color: #1c1c1c;
-    color: white;
-    border: 1px solid #333;
+    background-color: #182235;
+    color: #f8fafc;
+    border-color: #2b3a55;
+    padding: 1rem;
+}
+
+.list-group-item:hover,
+.list-group-item:focus {
+    background-color: #20304a;
+    color: #ffffff;
 }
 
 .btn-primary {
-    background-color: #bfa046;
-    border: none;
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.form-control,
+.form-select,
+.login-panel input {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+.form-control:focus,
+.form-select:focus,
+.login-panel input:focus {
+    background-color: #0f172a;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
+    color: #f8fafc;
+}
+
+.login-panel {
+    max-width: 420px;
+}
+
+.task-badges {
+    min-width: 150px;
+    text-align: right;
+}
+
+.task-detail,
+.empty-state {
+    background-color: #182235;
+    border: 1px solid #2b3a55;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+@media (max-width: 767.98px) {
+    .task-badges {
+        min-width: 0;
+        text-align: left;
+    }
 }

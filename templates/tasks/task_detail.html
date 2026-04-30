@@ -2,13 +2,29 @@
 
 {% block content %}
 
-<h2>{{ task.title }}</h2>
+<div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-2">{{ task.title }}</h1>
+        <span class="badge text-bg-secondary">{{ task.get_status_display }}</span>
+        <span class="badge text-bg-warning">{{ task.get_priority_display }}</span>
+    </div>
 
-<p>{{ task.description }}</p>
+    <div class="d-flex gap-2 align-items-start">
+        <a href="{% url 'task_edit' task.id %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'task_delete' task.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+    </div>
+</div>
 
-<p>Status: {{ task.status }}</p>
-<p>Priority: {{ task.priority }}</p>
+<div class="task-detail">
+    <h2 class="h6 text-secondary text-uppercase">Description</h2>
+    <p class="mb-0">{{ task.description|default:'No description.' }}</p>
+</div>
 
-<a href="{% url 'task_list' %}" class="btn btn-secondary">Back</a>
+<div class="text-secondary small mt-3">
+    Created: {{ task.created_at|date:'M d, Y H:i' }}<br>
+    Updated: {{ task.updated_at|date:'M d, Y H:i' }}
+</div>
+
+<a href="{% url 'task_list' %}" class="btn btn-outline-light mt-4">Back</a>
 
 {% endblock %}

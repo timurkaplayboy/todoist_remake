@@ -6,6 +6,6 @@ class UserIsOwnerMixin:
         obj = self.get_object()
 
         if obj.owner != request.user:
-            raise PermissionDenied("You are not the owner")
+            raise PermissionDenied("You are not the owner of this task.")
 
         return super().dispatch(request, *args, **kwargs)

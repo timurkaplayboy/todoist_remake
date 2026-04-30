@@ -2,13 +2,26 @@
 
 {% block content %}
 
-<h2>Create Task</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">{% if object %}Edit Task{% else %}Create Task{% endif %}</h1>
+    <a href="{% url 'task_list' %}" class="btn btn-outline-light btn-sm">Back</a>
+</div>
 
-<form method="post">
+<form method="post" class="task-form">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {% for field in form %}
+        <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="invalid-feedback d-block">{{ field.errors|join:', ' }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
 
     <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'task_list' %}" class="btn btn-link text-decoration-none">Cancel</a>
 </form>
 
 {% endblock %}
