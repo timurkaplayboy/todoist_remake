@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Task(models.Model):
@@ -40,3 +40,46 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TaskComment(models.Model):
+    IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif', '.webp')
+    VIDEO_EXTENSIONS = ('.mp4', '.mov', '.webm')
+
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='task_comments'
+    )
+    text = models.TextField(blank=True)
+    media = models.FileField(
+        upload_to='task_comments/%Y/%m/%d/',
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f'Comment by {self.author} on {self.task}'
+
+    @property
+    def media_name(self):
+        if not self.media:
+            return ''
+        return self.media.name.rsplit('/', 1)[-1]
+
+    @property
+    def is_image(self):
+        return bool(self.media and self.media.name.lower().endswith(self.IMAGE_EXTENSIONS))
+
+    @property
+    def is_video(self):
+        return bool(self.media and self.media.name.lower().endswith(self.VIDEO_EXTENSIONS))

@@ -2,13 +2,16 @@
 
 {% block content %}
 
-<h1 class="h3 mb-3">Delete task?</h1>
-<p class="text-secondary">This will permanently delete "{{ object.title }}".</p>
+<section class="editor-panel danger-panel">
+    <p class="eyebrow">Confirm action</p>
+    <h1>Delete task?</h1>
+    <p class="text-secondary">This will permanently delete "{{ object.title }}" and its comments.</p>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Yes, delete</button>
-    <a href="{% url 'task_detail' object.id %}" class="btn btn-link text-decoration-none">Cancel</a>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'task_detail' object.id %}" class="btn btn-link text-decoration-none">Cancel</a>
+    </form>
+</section>
 
 {% endblock %}

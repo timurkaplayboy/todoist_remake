@@ -2,29 +2,104 @@
 
 {% block content %}
 
-<div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
-    <div>
-        <h1 class="h3 mb-2">{{ task.title }}</h1>
-        <span class="badge text-bg-secondary">{{ task.get_status_display }}</span>
-        <span class="badge text-bg-warning">{{ task.get_priority_display }}</span>
-    </div>
+<section class="detail-layout">
+    <article class="detail-main">
+        <div class="task-detail-header">
+            <div>
+                <p class="eyebrow">Task by {{ task.owner.username }}</p>
+                <h1>{{ task.title }}</h1>
+            </div>
 
-    <div class="d-flex gap-2 align-items-start">
-        <a href="{% url 'task_edit' task.id %}" class="btn btn-primary btn-sm">Edit</a>
-        <a href="{% url 'task_delete' task.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-    </div>
-</div>
+            <div class="detail-actions">
+                {% if task.owner == request.user %}
+                    <a href="{% url 'task_edit' task.id %}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{% url 'task_delete' task.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                {% endif %}
+                <a href="{% url 'task_list' %}" class="btn btn-outline-light btn-sm">Back</a>
+            </div>
+        </div>
 
-<div class="task-detail">
-    <h2 class="h6 text-secondary text-uppercase">Description</h2>
-    <p class="mb-0">{{ task.description|default:'No description.' }}</p>
-</div>
+        <div class="meta-row">
+            <span class="status-pill status-{{ task.status }}">{{ task.get_status_display }}</span>
+            <span class="priority-pill priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+            <span>Updated {{ task.updated_at|date:'M d, Y H:i' }}</span>
+        </div>
 
-<div class="text-secondary small mt-3">
-    Created: {{ task.created_at|date:'M d, Y H:i' }}<br>
-    Updated: {{ task.updated_at|date:'M d, Y H:i' }}
-</div>
+        <section class="content-panel">
+            <h2>Description</h2>
+            <p>{{ task.description|default:'No description yet.' }}</p>
+        </section>
+    </article>
 
-<a href="{% url 'task_list' %}" class="btn btn-outline-light mt-4">Back</a>
+    <aside class="activity-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Collaboration</p>
+                <h2>Comments & files</h2>
+            </div>
+            <span class="comment-total">{{ comments|length }}</span>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" action="{% url 'task_comment_create' task.id %}" class="comment-form">
+            {% csrf_token %}
+
+            {% if comment_form.non_field_errors %}
+                <div class="alert alert-danger">{{ comment_form.non_field_errors|join:', ' }}</div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="{{ comment_form.text.id_for_label }}" class="form-label">{{ comment_form.text.label }}</label>
+                {{ comment_form.text }}
+                {% if comment_form.text.errors %}
+                    <div class="invalid-feedback d-block">{{ comment_form.text.errors|join:', ' }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ comment_form.media.id_for_label }}" class="form-label">{{ comment_form.media.label }}</label>
+                {{ comment_form.media }}
+                {% if comment_form.media.errors %}
+                    <div class="invalid-feedback d-block">{{ comment_form.media.errors|join:', ' }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Add comment</button>
+        </form>
+
+        <div class="comment-list">
+            {% for comment in comments %}
+                <article class="comment-item">
+                    <div class="comment-meta">
+                        <span class="avatar">{{ comment.author.username|first|upper }}</span>
+                        <div>
+                            <strong>{{ comment.author.username }}</strong>
+                            <span>{{ comment.created_at|date:'M d, Y H:i' }}</span>
+                        </div>
+                    </div>
+
+                    {% if comment.text %}
+                        <p>{{ comment.text|linebreaksbr }}</p>
+                    {% endif %}
+
+                    {% if comment.media %}
+                        <div class="media-preview">
+                            {% if comment.is_image %}
+                                <img src="{{ comment.media.url }}" alt="{{ comment.media_name }}">
+                            {% elif comment.is_video %}
+                                <video src="{{ comment.media.url }}" controls></video>
+                            {% else %}
+                                <a href="{{ comment.media.url }}" target="_blank" rel="noopener">{{ comment.media_name }}</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <div class="empty-state">
+                    No comments yet. Start the discussion with a note or file.
+                </div>
+            {% endfor %}
+        </div>
+    </aside>
+</section>
 
 {% endblock %}

@@ -2,53 +2,75 @@
 
 {% block content %}
 
-<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+<section class="page-header">
     <div>
-        <h1 class="h3 mb-1">My Tasks</h1>
-        <p class="text-secondary mb-0">Plan, filter, and track your tasks in one place.</p>
+        <p class="eyebrow">Team workspace</p>
+        <h1>Task board</h1>
+        <p class="page-lead">Open any teammate's task, discuss progress, and keep files attached to the work itself.</p>
     </div>
     <a href="{% url 'task_create' %}" class="btn btn-primary">New Task</a>
-</div>
+</section>
 
-<form method="get" class="row g-2 align-items-end mb-4">
-    <div class="col-12 col-md-4">
+<section class="metric-grid">
+    <div class="metric-panel">
+        <span>Total tasks</span>
+        <strong>{{ total_tasks }}</strong>
+    </div>
+    <div class="metric-panel">
+        <span>Open work</span>
+        <strong>{{ open_tasks }}</strong>
+    </div>
+    <div class="metric-panel">
+        <span>My tasks</span>
+        <strong>{{ my_tasks }}</strong>
+    </div>
+</section>
+
+<form method="get" class="filter-bar">
+    <div>
         <label for="{{ filter_form.status.id_for_label }}" class="form-label">Status</label>
         {{ filter_form.status }}
     </div>
-    <div class="col-12 col-md-4">
+    <div>
         <label for="{{ filter_form.priority.id_for_label }}" class="form-label">Priority</label>
         {{ filter_form.priority }}
     </div>
-    <div class="col-12 col-md-auto">
-        <button class="btn btn-outline-light w-100">Filter</button>
+    <div class="filter-check">
+        {{ filter_form.only_mine }}
+        <label for="{{ filter_form.only_mine.id_for_label }}" class="form-check-label">Only my tasks</label>
     </div>
-    <div class="col-12 col-md-auto">
+    <div class="filter-actions">
+        <button class="btn btn-outline-light">Filter</button>
         <a href="{% url 'task_list' %}" class="btn btn-link text-decoration-none">Reset</a>
     </div>
 </form>
 
-<div class="list-group">
+<section class="task-grid">
     {% for task in tasks %}
-        <a href="{% url 'task_detail' task.id %}" class="list-group-item list-group-item-action">
-            <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
-                <div>
-                    <strong>{{ task.title }}</strong>
-                    {% if task.description %}
-                        <p class="text-secondary mb-0 mt-1">{{ task.description|truncatechars:120 }}</p>
-                    {% endif %}
-                </div>
+        <a href="{% url 'task_detail' task.id %}" class="task-card">
+            <div class="task-card-top">
+                <span class="avatar">{{ task.owner.username|first|upper }}</span>
+                <span class="owner-name">{{ task.owner.username }}</span>
+            </div>
 
-                <div class="task-badges">
-                    <span class="badge text-bg-secondary">{{ task.get_status_display }}</span>
-                    <span class="badge text-bg-warning">{{ task.get_priority_display }}</span>
-                </div>
+            <h2>{{ task.title }}</h2>
+            {% if task.description %}
+                <p>{{ task.description|truncatechars:150 }}</p>
+            {% else %}
+                <p class="muted">No description yet.</p>
+            {% endif %}
+
+            <div class="task-card-footer">
+                <span class="status-pill status-{{ task.status }}">{{ task.get_status_display }}</span>
+                <span class="priority-pill priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                <span class="comment-count">{{ task.comment_count }} comments</span>
             </div>
         </a>
     {% empty %}
-        <div class="empty-state text-center text-secondary">
+        <div class="empty-state">
             No tasks yet.
         </div>
     {% endfor %}
-</div>
+</section>
 
 {% endblock %}

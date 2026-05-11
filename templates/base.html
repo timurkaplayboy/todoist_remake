@@ -10,20 +10,26 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
-    <div class="container">
-        <a class="navbar-brand fw-semibold" href="{% url 'task_list' %}">Todoist Remake</a>
+<nav class="app-nav">
+    <div class="container app-nav-inner">
+        <a class="brand" href="{% url 'task_list' %}">
+            <span class="brand-mark">T</span>
+            <span>TaskHub</span>
+        </a>
 
         {% if user.is_authenticated %}
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-            </form>
+            <div class="nav-actions">
+                <span class="user-pill">{{ user.username }}</span>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                </form>
+            </div>
         {% endif %}
     </div>
 </nav>
 
-<main class="container py-4">
+<main class="container app-shell">
     {% block content %}{% endblock %}
 </main>
 
